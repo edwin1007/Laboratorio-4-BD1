@@ -77,10 +77,10 @@ CREATE TABLE teaches(
 
 /*relacion de requires*/
 CREATE TABLE requires(
-    main_course varchar(45) not null,
-    prerequisite varchar(45) not null
+    main_course int not null,
+    prerequisite int not null,
     foreign key (main_course) references course(course_id),
-    foreign key (prerequisite) references enrols(sec_id),
+    foreign key (prerequisite) references course(course_id),
     primary key (main_course, prerequisite)
 );
 
