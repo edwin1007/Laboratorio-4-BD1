@@ -31,3 +31,20 @@ insert into course_offering (course_id, sec_id, year, semester, time, classroom)
         (837919, 5, 2004, 6, '17-02-2022 12:04:00',  '1210C');
 
 
+insert into enrols 
+    (student_id, course_id, sec_id, semester, year, grade) 
+values 
+    (7488, 837827, 1, 2, 2010, 4.5),
+    (7656, 837850, 2, 4, 2011, 4.3),
+    (7824, 837873, 3, 6, 2012, 4.1),
+    (7992, 837896, 4, 8, 2013, 4.0),
+    (8160, 837919, 5, 9, 2014, 3.8);
+
+insert into teaches 
+    (course_id, sec_id, semester, year, instructor_id)
+values
+    (837827, 1, 3, 2012, 1),
+    (837850, 2, 4, 2014, 2),
+    (837873, 3, 7, 2015, 3),
+    (837896, 4, 8, 2016, 4),
+    (837919, 5, 9, 2018, 5);
