@@ -13,7 +13,9 @@ WHERE student_id = 76567;
 
 --3.3.c   Encuentre los nombres de todos los estudiantes que se han matriculado en el curso con
 --        course_id = 837873
-
+SELECT name 
+FROM student NATURAL JOIN enrols
+WHERE course_id = 837873;
 
 
 --3.3.d   Cree una vista llamada better_students que presente los estudiantes que obtuvieron las
