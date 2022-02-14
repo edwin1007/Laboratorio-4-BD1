@@ -21,7 +21,6 @@ WHERE course_id = 837873;
 --3.3.d   Cree una vista llamada better_students que presente los estudiantes que obtuvieron las
 --        notas más altas por cada semestre entre los años 1900 y 2018
 
-CREATE VIEW better_students as select 
 
 select student_id, grade, year, name_s as better_students
 from  student
