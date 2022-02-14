@@ -2,7 +2,7 @@
 Laboratorio 4: base de datos 1.
 */
 
-create database registro_universidad;
+create database sra_uv;
 
 /*relacion de student*/
 CREATE SEQUENCE student_seq start with 7488 increment by 168;
