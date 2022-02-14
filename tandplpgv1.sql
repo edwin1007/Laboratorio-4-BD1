@@ -4,32 +4,53 @@
 
 --BEFORE o AFTER ?
 
+/*
 
+alter TABLE high_schooler drop COLUMN his_id;
+alter TABLE high_schooler add COLUMN his_id int not null
+default nextval('his_id_seq');
+
+*/
+
+ALTER DATABASE registro_universidad RENAME TO sra_uv;
+
+ALTER TABLE enrols DROP COLUMN grade;
+ALTER TABLE enrols ADD COLUMN grade numeric(3, 2) not null;
+
+/*modificacion de enrols, sin check en grade
+    no es necesario crear tabla, solo se modificó 
+    la columna.
+*/
+
+CREATE TABLE enrols(
+    student_id int not null,
+    course_id int not null,
+    sec_id int not null,
+    semester int not null,
+    year int not null,
+    grade numeric(3, 2),
+    foreign key (student_id) references student(student_id),
+    foreign key (course_id) references course(course_id),
+    primary key (student_id, course_id, sec_id, semester, year) 
+);
+
+/*primer posible solucion*/
 
 CREATE TRIGGER invalid_grade_insert
 BEFORE INSERT ON enrols
 FOR EACH ROW
     WHEN EXISTS (SELECT * FROM enrols
-                WHERE NEW.grade = 0.00 OR NEW.grade < 0 OR NEW.grade > 5)
-
+        WHERE NEW.grade = 0.00 OR NEW.grade < 0 OR NEW.grade > 5)
 DECLARE 
     invalid_grade_excep EXCEPTION;
-
 BEGIN
-    --DELETE FROM friend
-      --  WHERE his_id_A = OLD.his_id_B AND his_id_B = OLD.his_id_A;
-
     RAISE invalid_grade_excep;
-
 EXCEPTION 
     WHEN invalid_grade_excep THEN
         dbms_output.put_line('Grade must be bigger than 1 and smaller than 5!'); 
-
 END;
 
-
-
-
+/*segunda posible solucion*/
 
 CREATE TRIGGER invalid_grade_insert
 AFTER INSERT ON enrols
@@ -41,18 +62,12 @@ DECLARE
     invalid_grade_excep EXCEPTION;
 
 BEGIN
-    --DELETE FROM friend
-      --  WHERE his_id_A = OLD.his_id_B AND his_id_B = OLD.his_id_A;
-
     RAISE invalid_grade_excep;
 
 EXCEPTION 
     WHEN invalid_grade_excep THEN
         ROLLBACK TRANSACTION;
-        --DELETE FROM enrols
-            --WHERE NEW.grade = 0.00 OR NEW.grade < 0 OR NEW.grade > 5;
         dbms_output.put_line('Grade must be bigger than 1 and smaller than 5!'); 
-
 END;
 
 
