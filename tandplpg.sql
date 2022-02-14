@@ -2,15 +2,6 @@
 --      mayor de 5.00 se debe generar una excepción indicando que el valor a guardar en
 --      grade es incorrecto o invalido.
 
---BEFORE o AFTER ?
-
-/*
-
-alter TABLE high_schooler drop COLUMN his_id;
-alter TABLE high_schooler add COLUMN his_id int not null
-default nextval('his_id_seq');
-
-*/
 
 ALTER DATABASE registro_universidad RENAME TO sra_uv;
 
@@ -34,23 +25,6 @@ CREATE TABLE enrols(
     primary key (student_id, course_id, sec_id, semester, year) 
 );
 
-/*primer posible solucion*/
-
-CREATE TRIGGER invalid_grade_insert
-BEFORE INSERT ON enrols
-FOR EACH ROW
-    WHEN EXISTS (SELECT * FROM enrols
-        WHERE NEW.grade = 0.00 OR NEW.grade < 0 OR NEW.grade > 5)
-DECLARE 
-    invalid_grade_excep EXCEPTION;
-BEGIN
-    RAISE invalid_grade_excep;
-EXCEPTION 
-    WHEN invalid_grade_excep THEN
-        dbms_output.put_line('Grade must be bigger than 1 and smaller than 5!'); 
-END;
-
-/*segunda posible solucion*/
 
 CREATE TRIGGER invalid_grade_insert
 AFTER INSERT ON enrols
@@ -84,9 +58,6 @@ AFTER UPDATE ON enrols
 FOR EACH ROW
     WHEN EXISTS (SELECT * FROM enrols
                 WHERE NEW.grade = OLD.grade)
---DECLARE 
-    --valid_grade_update NOTICE; --NSIN
-
 BEGIN
     RAISE NOTICE 'The grade has not been modified';
 END;
@@ -98,9 +69,6 @@ AFTER UPDATE ON enrols
 FOR EACH ROW
     WHEN EXISTS (SELECT * FROM enrols
                 WHERE NEW.grade > 0 OR NEW.grade < 5)   
---DECLARE 
-    --valid_grade_update NOTICE; --NSIN
-
 BEGIN
     RAISE NOTICE 'The grade has been changed to: ', NEW.grade;
     
@@ -119,19 +87,15 @@ DECLARE
     invalid_grade_update_excep EXCEPTION; --NS
 
 BEGIN
-    --DELETE FROM friend
-      --  WHERE his_id_A = OLD.his_id_B AND his_id_B = OLD.his_id_A;
-
     RAISE invalid_grade_update_excep; --NS
 
 EXCEPTION 
     WHEN invalid_grade_excep THEN
         ROLLBACK TRANSACTION;
-        --DELETE FROM enrols
-            --WHERE NEW.grade = 0.00 OR NEW.grade < 0 OR NEW.grade > 5;
-        --dbms_output.put_line('Grade must be bigger than 1 and smaller than 5!'); 
         RAISE NOTICE 'Grade must be bigger than 1 and smaller than 5!';
 END;
+
+
 
 
 
@@ -149,22 +113,21 @@ CREATE PROCEDURE create_teaches(instructor_id_arg INT, course_id_arg INT)
 LANGUAGE SQL
 AS $$
     BEGIN
-        if (
+        IF (
             EXISTS( SELECT 1 FROM course_offering 
             WHERE course_id_arg = course_id) 
             )
-        Begin
+        THEN
 
-        INSERT INTO teaches VALUES(course_id_arg, 
-        SELECT sec_id FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
-        SELECT semester FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
-        SELECT year FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
-        instructor_id_arg
-        ));
-        
+            INSERT INTO teaches VALUES(course_id_arg, 
+            SELECT sec_id FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
+            SELECT semester FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
+            SELECT year FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
+            instructor_id_arg
+            ));
+        END IF;
     END;
 $$;
-
 
 
 
