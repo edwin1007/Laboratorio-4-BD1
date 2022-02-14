@@ -23,6 +23,11 @@ WHERE course_id = 837873;
 
 CREATE VIEW better_students as select 
 
+select student_id, grade, year, name_s as better_students
+from  student
+natural join  enrols WHERE year > 1900 and year < 2018
+order by grade desc limit 3;
+
 
 
 
