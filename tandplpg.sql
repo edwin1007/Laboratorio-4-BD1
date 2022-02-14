@@ -145,17 +145,23 @@ END;
 --  insertar en teaches.
 
 
-CREATE PROCEDURE create_teaches(instructor_id INT, course_id INT)
+CREATE PROCEDURE create_teaches(instructor_id_arg INT, course_id_arg INT)
 LANGUAGE SQL
 AS $$
     BEGIN
+        if (
+            EXISTS( SELECT 1 FROM course_offering 
+            WHERE course_id_arg = course_id) 
+            )
+        Begin
 
-        -- A is a friend of B
-        INSERT INTO friend VALUES(id_A, id_B);
-        -- B is a friend of A
-        INSERT INTO friend VALUES(id_B, id_A);
-        -- Hacer las inserciones 
-        COMMIT;
+        INSERT INTO teaches VALUES(course_id_arg, 
+        SELECT sec_id FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
+        SELECT semester FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
+        SELECT year FROM course_offering LIMIT 1 WHERE course_offering.course_id = course_id_arg,
+        instructor_id_arg
+        ));
+        
     END;
 $$;
 
