@@ -8,7 +8,7 @@ FROM instructor;
 --3.3.b   Indique el nombre y programa del estudiante con student_id = 76567
 SELECT name_s, program 
 FROM student
-WHERE student_id = 76567;
+WHERE student_id = 7656;
 
 
 --3.3.c   Encuentre los nombres de todos los estudiantes que se han matriculado en el curso con
